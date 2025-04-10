@@ -114,7 +114,6 @@
 
         const efficiencyCleaning = 0.985; // Ефективність очищення
 
-        // Розрахунок показника емісії
         const emvug = (1e6 / lowerHeatVug) * fractionAshVug * (massContentAshVug / (100 - massContentCombSubVug)) * (1 - efficiencyCleaning);
         const emmaz = (1e6 / lowerHeatMaz) * fractionAshMaz * (massContentAshMaz / (100 - massContentCombSubMaz)) * (1 - efficiencyCleaning);
         const emgaz = 0; // Для природного газу емісія відсутня
