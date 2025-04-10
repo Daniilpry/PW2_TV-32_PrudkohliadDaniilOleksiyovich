@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Веб-калькулятор</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #74ebd5, #9face6);
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .form-section {
+            background-color: #fff;
+            margin: 10px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        input[type=number] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        input[type=button] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+        input[type=button]:hover {
+            background-color: #45a049;
+        }
+        .results {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            width: 100%;
+        }
+        .results p {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Веб-калькулятор валових викидів</h1>
+<div class="container">
+    <div class="form-section">
+        <h2>Калькулятор</h2>
+        <form id="fuelForm">
+            <label>Донецьке газове вугілля марки ГР, т:</label>
+            <input type="number" id="masavug" name="masavug">
+
+            <label>Високосірчистий мазут марки 40, т:</label>
+            <input type="number" id="masamaz" name="masamaz">
+
+            <label>Природний газ із газопроводу Уренгой-Ужгород, м³:</label>
+            <input type="number" id="masagaz" name="masagaz">
+
+            <input type="button" value="Розрахувати" onclick="calculate()">
+        </form>
+    </div>
+    <div class="results" id="result">
+        <h2>Результати</h2>
+        <p>Результати з’являться тут після розрахунку.</p>
+    </div>
+</div>
+
+<script>
+    function calculate() {
+        // Отримання значень від користувача
+        const masavug = parseFloat(document.getElementById("masavug").value) || 0; // Вугілля
+        const masamaz = parseFloat(document.getElementById("masamaz").value) || 0; // Мазут
+        const masagaz = parseFloat(document.getElementById("masagaz").value) || 0; // Газ
+
+        // Константи для розрахунків
+        const lowerHeatVug = 20.47; // МДж/кг
+        const lowerHeatMaz = 39.48; // МДж/кг
+        const lowerHeatGas = 33.08; // МДж/м³
+
+        const fractionAshVug = 0.8; // Частка золи для вугілля
+        const fractionAshMaz = 1;   // Частка золи для мазуту
+
+        const massContentAshVug = 25.2; // Зольність вугілля, %
+        const massContentAshMaz = 0.15; // Зольність мазуту, %
+
+        const massContentCombSubVug = 1.5; // Горючі речовини у вугіллі, %
+        const massContentCombSubMaz = 0;   // Горючі речовини у мазуті, %
+
+        const efficiencyCleaning = 0.985; // Ефективність очищення
+
+        // Розрахунок показника емісії
+        const emvug = (1e6 / lowerHeatVug) * fractionAshVug * (massContentAshVug / (100 - massContentCombSubVug)) * (1 - efficiencyCleaning);
+        const emmaz = (1e6 / lowerHeatMaz) * fractionAshMaz * (massContentAshMaz / (100 - massContentCombSubMaz)) * (1 - efficiencyCleaning);
+        const emgaz = 0; // Для природного газу емісія відсутня
+
+        // Розрахунок валових викидів
+        const vukvug = 1e-6 * emvug * lowerHeatVug * masavug; // Вугілля
+        const vukmaz = 1e-6 * emmaz * lowerHeatMaz * masamaz; // Мазут
+        const vukgaz = 1e-6 * emgaz * lowerHeatGas * masagaz; // Газ
+
+        // Виведення результатів
+        const resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = `
+            <h2>Результати</h2>
+            <p><strong>Показник емісії твердих частинок:</strong></p>
+            <p>Вугілля: ${emvug.toFixed(2)} г/ГДж</p>
+            <p>Мазут: ${emmaz.toFixed(2)} г/ГДж</p>
+            <p>Газ: ${emgaz.toFixed(2)} г/ГДж</p>
+            <p><strong>Валовий викид:</strong></p>
+            <p>Вугілля: ${vukvug.toFixed(2)} т</p>
+            <p>Мазут: ${vukmaz.toFixed(2)} т</p>
+            <p>Газ: ${vukgaz.toFixed(2)} т</p>
+        `;
+    }
+</script>
+
+</body>
+</html>
