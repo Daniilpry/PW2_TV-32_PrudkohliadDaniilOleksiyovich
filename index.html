@@ -93,12 +93,10 @@
 
 <script>
     function calculate() {
-        // Отримання значень від користувача
         const masavug = parseFloat(document.getElementById("masavug").value) || 0; // Вугілля
         const masamaz = parseFloat(document.getElementById("masamaz").value) || 0; // Мазут
         const masagaz = parseFloat(document.getElementById("masagaz").value) || 0; // Газ
 
-        // Константи для розрахунків
         const lowerHeatVug = 20.47; // МДж/кг
         const lowerHeatMaz = 39.48; // МДж/кг
         const lowerHeatGas = 33.08; // МДж/м³
@@ -118,12 +116,10 @@
         const emmaz = (1e6 / lowerHeatMaz) * fractionAshMaz * (massContentAshMaz / (100 - massContentCombSubMaz)) * (1 - efficiencyCleaning);
         const emgaz = 0; // Для природного газу емісія відсутня
 
-        // Розрахунок валових викидів
         const vukvug = 1e-6 * emvug * lowerHeatVug * masavug; // Вугілля
         const vukmaz = 1e-6 * emmaz * lowerHeatMaz * masamaz; // Мазут
         const vukgaz = 1e-6 * emgaz * lowerHeatGas * masagaz; // Газ
 
-        // Виведення результатів
         const resultDiv = document.getElementById("result");
         resultDiv.innerHTML = `
             <h2>Результати</h2>
